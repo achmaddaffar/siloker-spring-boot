@@ -5,15 +5,14 @@ import com.oliver.siloker.model.entity.Job;
 import com.oliver.siloker.model.exception.ResourceNotFoundException;
 import com.oliver.siloker.model.request.CreateJobRequest;
 import com.oliver.siloker.model.response.BaseResponse;
+import com.oliver.siloker.model.response.JobResponse;
+import com.oliver.siloker.model.response.PagingInfo;
 import com.oliver.siloker.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -39,5 +38,20 @@ public class JobController {
                         "Success",
                         job != null
                 ));
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<PagingInfo<JobResponse>>> getJobs(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        PagingInfo<JobResponse> jobPagingInfo = jobService.getJobs(page, size);
+        return ResponseEntity.ok(
+                new BaseResponse<>(
+                        HttpStatus.OK.value(),
+                        "Success",
+                        jobPagingInfo
+                )
+        );
     }
 }
