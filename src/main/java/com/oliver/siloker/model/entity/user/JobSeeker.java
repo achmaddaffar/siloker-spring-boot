@@ -15,7 +15,6 @@ public class JobSeeker {
     private Long id;
 
     @OneToOne
-    @MapsId
     @JoinColumn(name = "user_id")
     private User user;
 

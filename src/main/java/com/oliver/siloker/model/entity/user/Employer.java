@@ -13,7 +13,6 @@ public class Employer {
     private Long id;
 
     @OneToOne
-    @MapsId
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -2,7 +2,7 @@ package com.oliver.siloker.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oliver.siloker.component.AuthFilter;
-import com.oliver.siloker.model.dto.ErrorDto;
+import com.oliver.siloker.model.response.ErrorDto;
 import com.oliver.siloker.model.response.BaseResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
