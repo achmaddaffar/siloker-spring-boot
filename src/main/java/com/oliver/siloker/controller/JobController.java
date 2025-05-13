@@ -10,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,11 +25,11 @@ public class JobController {
     private final JobService jobService;
 
     @PostMapping(
-            name = "/create",
+            path = "/create",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<BaseResponse<Job>> createJob(
-            @RequestBody CreateJobRequest request
+    public ResponseEntity<BaseResponse<Boolean>> createJob(
+            @ModelAttribute CreateJobRequest request
     ) throws IOException, ResourceNotFoundException {
         Job job = jobService.createJob(request);
         return ResponseEntity
@@ -37,7 +37,7 @@ public class JobController {
                 .body(new BaseResponse<>(
                         HttpStatus.CREATED.value(),
                         "Success",
-                        job
+                        job != null
                 ));
     }
 }
