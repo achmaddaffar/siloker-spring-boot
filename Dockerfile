@@ -4,6 +4,7 @@ FROM openjdk:17-jdk-slim
 # Set environment variable for JAR file name
 ENV APP_NAME=siloker-0.0.1-SNAPSHOT.jar
 
+VOLUME /tmp
 # Set working directory inside container
 WORKDIR /app
 

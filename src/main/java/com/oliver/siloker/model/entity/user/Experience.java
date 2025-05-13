@@ -12,6 +12,9 @@ public class Experience {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, name = "user_id")
+    private Long userId;
+
     @Column(nullable = false, name = "name")
     private String name;
 

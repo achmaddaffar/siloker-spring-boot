@@ -62,6 +62,12 @@ public class JwtUtils {
                 .compact();
     }
 
+    public CustomUserDetails getUserDetails() {
+        return (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+    }
+
     public Long getUserId() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
