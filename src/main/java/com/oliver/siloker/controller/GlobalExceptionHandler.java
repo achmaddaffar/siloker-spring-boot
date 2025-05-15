@@ -11,34 +11,45 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<BaseResponse<Object>> handleResourceNotFound(ResourceNotFoundException ex) {
+    public ResponseEntity<BaseResponse<Object>> handleResourceNotFound(ResourceNotFoundException e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new BaseResponse<>(
                         HttpStatus.NOT_FOUND.value(),
-                        ex.getMessage(),
+                        e.getMessage(),
                         null
                 ));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<BaseResponse<Object>> handleBadRequest(IllegalArgumentException ex) {
+    public ResponseEntity<BaseResponse<Object>> handleBadRequest(IllegalArgumentException e) {
         return ResponseEntity
                 .badRequest()
                 .body(new BaseResponse<>(
                         HttpStatus.BAD_REQUEST.value(),
-                        ex.getMessage(),
+                        e.getMessage(),
+                        null
+                ));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<BaseResponse<Object>> handleIllegalState(IllegalStateException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(new BaseResponse<>(
+                        HttpStatus.BAD_REQUEST.value(),
+                        e.getMessage(),
                         null
                 ));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<BaseResponse<Object>> handleGenericException(Exception ex) {
+    public ResponseEntity<BaseResponse<Object>> handleGenericException(Exception e) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new BaseResponse<>(
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        "Unexpected error: " + ex.getMessage(),
+                        "Unexpected error: " + e.getMessage(),
                         null
                 ));
     }

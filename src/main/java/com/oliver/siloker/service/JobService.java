@@ -1,11 +1,14 @@
 package com.oliver.siloker.service;
 
 import com.oliver.siloker.component.JwtUtils;
-import com.oliver.siloker.model.entity.Job;
+import com.oliver.siloker.model.custom.CustomUserDetails;
+import com.oliver.siloker.model.entity.job.Job;
 import com.oliver.siloker.model.entity.user.Employer;
+import com.oliver.siloker.model.entity.user.User;
 import com.oliver.siloker.model.exception.ResourceNotFoundException;
 import com.oliver.siloker.model.repository.EmployerRepository;
 import com.oliver.siloker.model.repository.JobRepository;
+import com.oliver.siloker.model.repository.UserRepository;
 import com.oliver.siloker.model.request.CreateJobRequest;
 import com.oliver.siloker.model.response.JobResponse;
 import com.oliver.siloker.model.response.PagingInfo;
@@ -29,6 +32,7 @@ import java.util.UUID;
 public class JobService {
 
     private final EmployerRepository employerRepository;
+    private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final JwtUtils jwtUtils;
 
@@ -37,7 +41,11 @@ public class JobService {
     public Job createJob(
             CreateJobRequest request
     ) throws ResourceNotFoundException, IOException {
-        Employer employer = employerRepository.findByUserId(jwtUtils.getUserId())
+        CustomUserDetails userDetails = jwtUtils.getUserDetails();
+        User user = userRepository.findByPhoneNumber(userDetails.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Employer employer = employerRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employer not found"));
 
         String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(request.getImage().getOriginalFilename()));

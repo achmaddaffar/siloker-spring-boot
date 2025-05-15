@@ -1,12 +1,15 @@
 package com.oliver.siloker.controller;
 
 import com.oliver.siloker.component.ApiRoutes;
-import com.oliver.siloker.model.entity.Job;
+import com.oliver.siloker.model.entity.job.Job;
+import com.oliver.siloker.model.entity.job.JobApplication;
 import com.oliver.siloker.model.exception.ResourceNotFoundException;
 import com.oliver.siloker.model.request.CreateJobRequest;
 import com.oliver.siloker.model.response.BaseResponse;
+import com.oliver.siloker.model.response.JobApplicationResponse;
 import com.oliver.siloker.model.response.JobResponse;
 import com.oliver.siloker.model.response.PagingInfo;
+import com.oliver.siloker.service.JobApplicationService;
 import com.oliver.siloker.service.JobService;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ import java.io.IOException;
 public class JobController {
 
     private final JobService jobService;
+    private final JobApplicationService jobApplicationService;
 
     @PostMapping(
             path = "/create",
@@ -53,6 +57,34 @@ public class JobController {
                         HttpStatus.OK.value(),
                         "Success",
                         jobPagingInfo
+                )
+        );
+    }
+
+    @PostMapping("/apply/{jobId}")
+    public ResponseEntity<BaseResponse<Boolean>> applyToJob(
+            @PathVariable Long jobId
+    ) throws ResourceNotFoundException {
+        JobApplication jobApplication = jobApplicationService.applyToJob(jobId);
+        return ResponseEntity.ok(new BaseResponse<>(
+                HttpStatus.OK.value(),
+                "Job application submitted",
+                jobApplication != null
+        ));
+    }
+
+    @GetMapping("/applicants")
+    public ResponseEntity<BaseResponse<PagingInfo<JobApplicationResponse>>> getJobApplicants(
+            @RequestParam(name = "job_id") Long jobId,
+            @RequestParam(defaultValue = "1") @Min(1) Integer page,
+            @RequestParam(defaultValue = "10") @Min(1) Integer size
+    ) throws ResourceNotFoundException {
+        PagingInfo<JobApplicationResponse> jobApplicationPagingInfo = jobApplicationService.getJobApplicants(jobId, page, size);
+        return ResponseEntity.ok(
+                new BaseResponse<>(
+                        HttpStatus.OK.value(),
+                        "Success",
+                        jobApplicationPagingInfo
                 )
         );
     }

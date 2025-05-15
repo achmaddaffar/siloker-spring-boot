@@ -48,20 +48,18 @@ public class UserService {
         jobSeeker.setResumeUrl(request.getResumeUrl());
         jobSeeker.setCreatedAt(LocalDateTime.now().toString());
 
-        skillRepository.deleteSkillsByUserId(user.getId());
+        if (jobSeeker.getSkills() != null) skillRepository.deleteAll(jobSeeker.getSkills());
         List<Skill> skills = request.getSkills().stream().map((skillName) -> {
             Skill skill = new Skill();
-            skill.setUserId(user.getId());
             skill.setName(skillName);
             skill.setCreatedAt(LocalDateTime.now().toString());
             return skill;
         }).toList();
         skillRepository.saveAll(skills);
 
-        experienceRepository.deleteExperiencesByUserId(user.getId());
+        if (jobSeeker.getExperiences() != null) experienceRepository.deleteAll(jobSeeker.getExperiences());
         List<Experience> experiences = request.getExperiences().stream().map((experienceName) -> {
             Experience experience = new Experience();
-            experience.setUserId(user.getId());
             experience.setName(experienceName);
             experience.setCreatedAt(LocalDateTime.now().toString());
             return experience;

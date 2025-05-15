@@ -1,4 +1,4 @@
-package com.oliver.siloker.model.entity;
+package com.oliver.siloker.model.entity.job;
 
 import com.oliver.siloker.model.entity.user.Employer;
 import jakarta.persistence.*;

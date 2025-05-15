@@ -1,5 +1,6 @@
 package com.oliver.siloker.model.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -29,6 +30,7 @@ public class User {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
+    @JsonManagedReference
     private JobSeeker jobSeeker;
 
     @OneToOne(
@@ -36,5 +38,6 @@ public class User {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
+    @JsonManagedReference
     private Employer employer;
 }

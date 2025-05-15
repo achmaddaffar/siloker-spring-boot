@@ -1,6 +1,6 @@
 package com.oliver.siloker.model.repository;
 
-import com.oliver.siloker.model.entity.Job;
+import com.oliver.siloker.model.entity.job.Job;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
