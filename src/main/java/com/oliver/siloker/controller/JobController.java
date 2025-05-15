@@ -8,6 +8,7 @@ import com.oliver.siloker.model.response.BaseResponse;
 import com.oliver.siloker.model.response.JobResponse;
 import com.oliver.siloker.model.response.PagingInfo;
 import com.oliver.siloker.service.JobService;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,10 +43,11 @@ public class JobController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<PagingInfo<JobResponse>>> getJobs(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+            @RequestParam(defaultValue = "") String query,
+            @RequestParam(defaultValue = "1") @Min(1) Integer page,
+            @RequestParam(defaultValue = "10") @Min(1) Integer size
     ) {
-        PagingInfo<JobResponse> jobPagingInfo = jobService.getJobs(page, size);
+        PagingInfo<JobResponse> jobPagingInfo = jobService.getJobs(query, page, size);
         return ResponseEntity.ok(
                 new BaseResponse<>(
                         HttpStatus.OK.value(),
