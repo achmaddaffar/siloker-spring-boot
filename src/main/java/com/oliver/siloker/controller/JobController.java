@@ -1,6 +1,7 @@
 package com.oliver.siloker.controller;
 
 import com.oliver.siloker.component.ApiRoutes;
+import com.oliver.siloker.model.entity.job.ApplicationStatus;
 import com.oliver.siloker.model.entity.job.Job;
 import com.oliver.siloker.model.entity.job.JobApplication;
 import com.oliver.siloker.model.exception.ResourceNotFoundException;
@@ -85,6 +86,40 @@ public class JobController {
                         HttpStatus.OK.value(),
                         "Success",
                         jobApplicationPagingInfo
+                )
+        );
+    }
+
+    @PostMapping("/applicants/{applicationId}/accept")
+    public ResponseEntity<BaseResponse<JobApplicationResponse>> acceptApplication(
+            @PathVariable Long applicationId
+    ) throws ResourceNotFoundException {
+        JobApplicationResponse jobApplicationResponse = jobApplicationService.changeApplicantStatus(
+                applicationId,
+                ApplicationStatus.ACCEPTED
+        );
+        return ResponseEntity.ok(
+                new BaseResponse<>(
+                        HttpStatus.OK.value(),
+                        "Success",
+                        jobApplicationResponse
+                )
+        );
+    }
+
+    @PostMapping("/applicants/{applicationId}/reject")
+    public ResponseEntity<BaseResponse<JobApplicationResponse>> rejectApplication(
+            @PathVariable Long applicationId
+    ) throws ResourceNotFoundException {
+        JobApplicationResponse jobApplicationResponse = jobApplicationService.changeApplicantStatus(
+                applicationId,
+                ApplicationStatus.REJECTED
+        );
+        return ResponseEntity.ok(
+                new BaseResponse<>(
+                        HttpStatus.OK.value(),
+                        "Success",
+                        jobApplicationResponse
                 )
         );
     }

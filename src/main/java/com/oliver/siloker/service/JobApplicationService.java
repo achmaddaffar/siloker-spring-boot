@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -67,5 +68,29 @@ public class JobApplicationService {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         Page<JobApplication> jobApplicationPage = jobApplicationRepository.filterByJobId(jobId, pageRequest);
         return PagingInfo.convertFromPage(jobApplicationPage.map(JobApplication::toResponse));
+    }
+
+    public JobApplicationResponse changeApplicantStatus(
+            Long jobApplicationId,
+            ApplicationStatus applicationStatus
+    ) throws ResourceNotFoundException {
+        User user = userRepository.findById(jwtUtils.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.getEmployer() == null)
+            throw new IllegalStateException("User is not registered as Employer");
+
+        JobApplication jobApplication = jobApplicationRepository.findById(jobApplicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Job application is not exist"));
+
+        if (!Objects.equals(jobApplication.getJob().getEmployer().getId(), user.getEmployer().getId()))
+            throw new IllegalStateException("You are not the employer");
+
+        jobApplication.setStatus(applicationStatus);
+        jobApplication.setUpdatedAt(LocalDateTime.now().toString());
+
+        return jobApplicationRepository
+                .save(jobApplication)
+                .toResponse();
     }
 }
