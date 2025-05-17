@@ -79,12 +79,21 @@ public class JobController {
     }
 
     @GetMapping("/applicants")
-    public ResponseEntity<BaseResponse<PagingInfo<JobApplicationResponse>>> getJobApplicants(
-            @RequestParam(name = "job_id") Long jobId,
+    public ResponseEntity<BaseResponse<PagingInfo<JobApplicationResponse>>> getJobApplicantsByJobId(
+            @RequestParam(name = "job_id", required = false) Long jobId,
             @RequestParam(defaultValue = "1") @Min(1) Integer page,
             @RequestParam(defaultValue = "10") @Min(1) Integer size
     ) throws ResourceNotFoundException {
-        PagingInfo<JobApplicationResponse> jobApplicationPagingInfo = jobApplicationService.getJobApplicants(jobId, page, size);
+        if (jobId == null) {
+            PagingInfo<JobApplicationResponse> jobApplicationPagingInfo = jobApplicationService.getJobApplicantsByJobSeekerId(page, size);
+            return ResponseEntity.ok(new BaseResponse<>(
+                    HttpStatus.OK.value(),
+                    "Success",
+                    jobApplicationPagingInfo
+            ));
+        }
+
+        PagingInfo<JobApplicationResponse> jobApplicationPagingInfo = jobApplicationService.getJobApplicantsByJobId(jobId, page, size);
         return ResponseEntity.ok(
                 new BaseResponse<>(
                         HttpStatus.OK.value(),

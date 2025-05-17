@@ -77,7 +77,22 @@ public class JobApplicationService {
         return jobApplicationRepository.save(jobApplication);
     }
 
-    public PagingInfo<JobApplicationResponse> getJobApplicants(
+    public PagingInfo<JobApplicationResponse> getJobApplicantsByJobSeekerId(
+            Integer page,
+            Integer size
+    ) throws ResourceNotFoundException {
+        User user = userRepository.findById(jwtUtils.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.getJobSeeker() == null)
+            throw new IllegalStateException("User is not registered as Job Seeker");
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        Page<JobApplication> jobApplicationPage = jobApplicationRepository.filterByJobSeekerId(user.getJobSeeker().getId(), pageRequest);
+        return PagingInfo.convertFromPage(jobApplicationPage.map(JobApplication::toResponse));
+    }
+
+    public PagingInfo<JobApplicationResponse> getJobApplicantsByJobId(
             Long jobId,
             Integer page,
             Integer size
