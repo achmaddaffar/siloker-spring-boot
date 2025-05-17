@@ -21,6 +21,7 @@ public class JobApplicationResponse {
     private String phoneNumber;
     private String bio;
     private String resumeUrl;
+    private String cvUrl;
     private List<Skill> skills;
     private List<Experience> experiences;
     private ApplicationStatus status;

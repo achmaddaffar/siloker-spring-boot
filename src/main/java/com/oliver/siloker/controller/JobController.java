@@ -5,6 +5,7 @@ import com.oliver.siloker.model.entity.job.ApplicationStatus;
 import com.oliver.siloker.model.entity.job.Job;
 import com.oliver.siloker.model.entity.job.JobApplication;
 import com.oliver.siloker.model.exception.ResourceNotFoundException;
+import com.oliver.siloker.model.request.ApplyJobRequest;
 import com.oliver.siloker.model.request.CreateJobRequest;
 import com.oliver.siloker.model.response.BaseResponse;
 import com.oliver.siloker.model.response.JobApplicationResponse;
@@ -62,11 +63,14 @@ public class JobController {
         );
     }
 
-    @PostMapping("/apply/{jobId}")
+    @PostMapping(
+            path = "/apply",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     public ResponseEntity<BaseResponse<Boolean>> applyToJob(
-            @PathVariable Long jobId
-    ) throws ResourceNotFoundException {
-        JobApplication jobApplication = jobApplicationService.applyToJob(jobId);
+            @ModelAttribute ApplyJobRequest request
+    ) throws ResourceNotFoundException, IOException {
+        JobApplication jobApplication = jobApplicationService.applyToJob(request);
         return ResponseEntity.ok(new BaseResponse<>(
                 HttpStatus.OK.value(),
                 "Job application submitted",

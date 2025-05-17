@@ -1,5 +1,6 @@
 package com.oliver.siloker.service;
 
+import com.oliver.siloker.component.FileUtils;
 import com.oliver.siloker.component.JwtUtils;
 import com.oliver.siloker.model.custom.CustomUserDetails;
 import com.oliver.siloker.model.entity.job.Job;
@@ -35,6 +36,7 @@ public class JobService {
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final JwtUtils jwtUtils;
+    private final FileUtils fileUtils;
 
     private final String uploadDir = "/uploads/images/";
 
@@ -48,16 +50,7 @@ public class JobService {
         Employer employer = employerRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employer not found"));
 
-        String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(request.getImage().getOriginalFilename()));
-        if (originalFilename.contains(".."))
-            throw new SecurityException("Filename contains invalid path sequence: " + originalFilename);
-
-        Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-        Files.createDirectories(uploadPath);
-
-        Path destinationFile = uploadPath.resolve(originalFilename).normalize();
-        if (!destinationFile.startsWith(uploadPath))
-            throw new SecurityException("Cannot store file outside the designated directory.");
+        Path uploadPath = FileUtils.validateFilename(request.getImage().getOriginalFilename(), uploadDir);
 
         String filename = UUID.randomUUID() + "_" + request.getImage().getOriginalFilename();
         File dest = new File(uploadPath.toFile(), filename);

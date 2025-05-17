@@ -43,6 +43,17 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler()
+    public ResponseEntity<BaseResponse<Object>> handleSecurityException(SecurityException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(new BaseResponse<>(
+                        HttpStatus.BAD_REQUEST.value(),
+                        e.getMessage(),
+                        null
+                ));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Object>> handleGenericException(Exception e) {
         return ResponseEntity

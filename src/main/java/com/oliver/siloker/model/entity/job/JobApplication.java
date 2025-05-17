@@ -22,6 +22,9 @@ public class JobApplication {
     @JoinColumn(name = "job_id")
     private Job job;
 
+    @Column(name = "cv_url", nullable = false)
+    private String cvUrl;
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
@@ -40,6 +43,7 @@ public class JobApplication {
                 getJobSeeker().getUser().getPhoneNumber(),
                 getJobSeeker().getUser().getBio(),
                 getJobSeeker().getResumeUrl(),
+                getCvUrl(),
                 getJobSeeker().getSkills(),
                 getJobSeeker().getExperiences(),
                 getStatus(),
