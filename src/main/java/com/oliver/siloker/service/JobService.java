@@ -16,6 +16,7 @@ import com.oliver.siloker.model.response.PagingInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -77,7 +78,7 @@ public class JobService {
             Integer pageNumber,
             Integer pageSize
     ) {
-        PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         Page<Job> jobs = jobRepository.filter(query, pageRequest);
 
         return PagingInfo.convertFromPage(jobs.map((item) -> new JobResponse(
