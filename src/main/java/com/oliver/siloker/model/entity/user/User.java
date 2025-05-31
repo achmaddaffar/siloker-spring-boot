@@ -40,4 +40,7 @@ public class User {
     )
     @JsonManagedReference
     private Employer employer;
+
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
 }

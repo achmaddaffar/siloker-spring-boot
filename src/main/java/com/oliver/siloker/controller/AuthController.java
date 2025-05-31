@@ -9,11 +9,11 @@ import com.oliver.siloker.model.response.BaseResponse;
 import com.oliver.siloker.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(ApiRoutes.AUTH)
@@ -22,10 +22,13 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
+    @PostMapping(
+            path = "/register",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     public ResponseEntity<BaseResponse<Boolean>> register(
-            @RequestBody RegisterRequest request
-    ) {
+            @ModelAttribute RegisterRequest request
+    ) throws IOException {
         User user = authService.registerUser(request);
         if (user == null)
             return ResponseEntity

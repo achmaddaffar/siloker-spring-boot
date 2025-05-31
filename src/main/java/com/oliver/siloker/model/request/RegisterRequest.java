@@ -1,22 +1,23 @@
 package com.oliver.siloker.model.request;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class RegisterRequest {
 
     @NotBlank(message = "full_name must be provided")
-    private String fullName;
+    private String full_name;
 
     @NotBlank(message = "phone_number must be provided")
-    private String phoneNumber;
+    private String phone_number;
 
     @NotBlank(message = "password must be provided")
     private String password;
 
     private String bio;
+
+    @NotBlank(message = "password must be provided")
+    private MultipartFile profile_picture;
 }

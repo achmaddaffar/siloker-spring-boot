@@ -17,4 +17,5 @@ public class GetUserResponse {
     private String bio;
     private Long employerId;
     private Long jobSeekerId;
+    private String profilePictureUrl;
 }

@@ -36,11 +36,17 @@ public class UserController {
                                 user.getPassword(),
                                 user.getBio(),
                                 user.getEmployer() == null ? null : user.getEmployer().getId(),
-                                user.getJobSeeker() == null ? null : user.getJobSeeker().getId()
+                                user.getJobSeeker() == null ? null : user.getJobSeeker().getId(),
+                                user.getProfilePictureUrl()
                         )
                 )
         );
     }
+
+//    @PostMapping
+//    public ResponseEntity<BaseResponse<Boolean>> updateUser() {
+//
+//    }
 
     @PostMapping("/register-job-seeker")
     public ResponseEntity<BaseResponse<Boolean>> registerJobSeeker(

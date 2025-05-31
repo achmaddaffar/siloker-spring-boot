@@ -6,6 +6,7 @@ import com.oliver.siloker.model.exception.ResourceNotFoundException;
 import com.oliver.siloker.model.repository.*;
 import com.oliver.siloker.model.request.RegisterEmployerRequest;
 import com.oliver.siloker.model.request.RegisterJobSeekerRequest;
+import com.oliver.siloker.model.request.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +36,16 @@ public class UserService {
         return userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
+
+//    public Boolean updateUser(
+//            Long id,
+//            UpdateUserRequest request
+//    ) throws ResourceNotFoundException {
+//        User user = userRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+//
+//
+//    }
 
     public JobSeeker registerJobSeeker(
             RegisterJobSeekerRequest request
