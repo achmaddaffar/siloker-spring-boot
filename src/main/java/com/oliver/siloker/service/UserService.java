@@ -1,5 +1,6 @@
 package com.oliver.siloker.service;
 
+import com.oliver.siloker.component.FileUtils;
 import com.oliver.siloker.component.JwtUtils;
 import com.oliver.siloker.model.entity.user.*;
 import com.oliver.siloker.model.exception.ResourceNotFoundException;
@@ -11,9 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +32,8 @@ public class UserService {
     private final ExperienceRepository experienceRepository;
     private final JwtUtils jwtUtils;
 
+    private final String uploadDir = "/uploads/images/";
+
     public User getUser() throws ResourceNotFoundException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
@@ -37,15 +45,47 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-//    public Boolean updateUser(
-//            Long id,
-//            UpdateUserRequest request
-//    ) throws ResourceNotFoundException {
-//        User user = userRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-//
-//
-//    }
+    public User updateUser(
+            UpdateUserRequest request
+    ) throws ResourceNotFoundException {
+        User user = userRepository.findById(jwtUtils.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setFullName(request.getFullName());
+        user.setBio(request.getBio());
+
+        return userRepository.save(user);
+    }
+
+    public Boolean uploadProfilePicture(
+            MultipartFile profilePicture
+    ) throws ResourceNotFoundException, IOException {
+        User user = userRepository.findById(jwtUtils.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.getProfilePictureUrl() != null) {
+            String oldFilename = user.getProfilePictureUrl().replace("/images/", "");
+            File oldFile = new File(uploadDir, oldFilename);
+            if (oldFile.exists()) {
+                oldFile.delete();
+            }
+        }
+
+        Path uploadPath = FileUtils.validateFilename(profilePicture.getOriginalFilename(), uploadDir);
+        String filename = UUID.randomUUID() + "_" + profilePicture.getOriginalFilename();
+        File destination = new File(uploadPath.toFile(), filename);
+        try {
+            profilePicture.transferTo(destination);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save image");
+        }
+        String imageUrl = "/images/" + filename;
+
+        user.setProfilePictureUrl(imageUrl);
+        userRepository.save(user);
+
+        return true;
+    }
 
     public JobSeeker registerJobSeeker(
             RegisterJobSeekerRequest request
