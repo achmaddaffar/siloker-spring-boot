@@ -1,6 +1,7 @@
 package com.oliver.siloker.model.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.oliver.siloker.model.response.EmployerResponse;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -32,4 +33,13 @@ public class Employer {
 
     @Column(name = "updated_at")
     private String updatedAt;
+
+    public EmployerResponse toResponse() {
+        return new EmployerResponse(
+                getId(),
+                getCompanyName(),
+                getPosition(),
+                getCompanyWebsite()
+        );
+    }
 }

@@ -106,7 +106,6 @@ public class UserService {
             skill.setCreatedAt(LocalDateTime.now().toString());
             return skill;
         }).toList();
-        skillRepository.saveAll(skills);
 
         if (jobSeeker.getExperiences() != null) experienceRepository.deleteAll(jobSeeker.getExperiences());
         List<Experience> experiences = request.getExperiences().stream().map((experienceName) -> {
@@ -115,7 +114,9 @@ public class UserService {
             experience.setCreatedAt(LocalDateTime.now().toString());
             return experience;
         }).toList();
-        experienceRepository.saveAll(experiences);
+
+        jobSeeker.setSkills(skills);
+        jobSeeker.setExperiences(experiences);
         user.setJobSeeker(jobSeeker);
 
         return jobSeekerRepository.save(jobSeeker);

@@ -3,6 +3,7 @@ package com.oliver.siloker.model.entity.user;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.oliver.siloker.model.response.JobSeekerResponse;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,14 +27,14 @@ public class JobSeeker {
     @Column(name = "resume_url")
     private String resumeUrl;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "id"
     )
     private List<Skill> skills;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "id"
@@ -45,4 +46,13 @@ public class JobSeeker {
 
     @Column(name = "updated_at")
     private String updatedAt;
+
+    public JobSeekerResponse toResponse() {
+        return new JobSeekerResponse(
+                getId(),
+                getResumeUrl(),
+                getSkills(),
+                getExperiences()
+        );
+    }
 }

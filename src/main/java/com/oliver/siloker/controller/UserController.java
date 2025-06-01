@@ -40,8 +40,8 @@ public class UserController {
                                 user.getPhoneNumber(),
                                 user.getPassword(),
                                 user.getBio(),
-                                user.getEmployer() == null ? null : user.getEmployer().getId(),
-                                user.getJobSeeker() == null ? null : user.getJobSeeker().getId(),
+                                user.getEmployer() == null ? null : user.getEmployer().toResponse(),
+                                user.getJobSeeker() == null ? null : user.getJobSeeker().toResponse(),
                                 user.getProfilePictureUrl()
                         )
                 )

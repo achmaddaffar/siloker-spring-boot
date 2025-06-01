@@ -8,14 +8,10 @@ import lombok.Data;
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @AllArgsConstructor
-public class GetUserResponse {
+public class EmployerResponse {
 
     private Long id;
-    private String fullName;
-    private String phoneNumber;
-    private String password;
-    private String bio;
-    private EmployerResponse employer;
-    private JobSeekerResponse jobSeeker;
-    private String profilePictureUrl;
+    private String companyName;
+    private String position;
+    private String companyWebsite;
 }
