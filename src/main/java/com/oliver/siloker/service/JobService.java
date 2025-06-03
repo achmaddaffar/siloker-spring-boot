@@ -77,11 +77,12 @@ public class JobService {
 
     public PagingInfo<JobResponse> getJobs(
             String query,
+            Long employerId,
             Integer pageNumber,
             Integer pageSize
     ) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
-        Page<Job> jobs = jobRepository.filter(query, pageRequest);
+        Page<Job> jobs = jobRepository.filter(query, employerId, pageRequest);
 
         return PagingInfo.convertFromPage(jobs.map((item) -> new JobResponse(
                 item.getId(),

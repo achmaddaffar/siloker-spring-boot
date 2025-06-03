@@ -47,10 +47,11 @@ public class JobController {
     @GetMapping
     public ResponseEntity<BaseResponse<PagingInfo<JobResponse>>> getJobs(
             @RequestParam(defaultValue = "") String query,
+            @RequestParam(defaultValue = "", name = "employer_id") Long employerId,
             @RequestParam(defaultValue = "1") @Min(1) Integer page,
             @RequestParam(defaultValue = "10") @Min(1) Integer size
     ) {
-        PagingInfo<JobResponse> jobPagingInfo = jobService.getJobs(query, page, size);
+        PagingInfo<JobResponse> jobPagingInfo = jobService.getJobs(query, employerId, page, size);
         return ResponseEntity.ok(
                 new BaseResponse<>(
                         HttpStatus.OK.value(),

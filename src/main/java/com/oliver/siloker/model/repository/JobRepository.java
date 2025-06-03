@@ -12,8 +12,9 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     @Query("""
             SELECT job FROM Job job WHERE
-            LOWER(job.title) LIKE LOWER(CONCAT('%', :query, '%')) OR
-            LOWER(job.description) LIKE LOWER(CONCAT('%', :query, '%'))
+            (LOWER(job.title) LIKE LOWER(CONCAT('%', :query, '%')) OR
+            LOWER(job.description) LIKE LOWER(CONCAT('%', :query, '%'))) AND
+            (:employerId IS NULL OR job.employer.id = :employerId)
             """)
-    Page<Job> filter(String query, Pageable pageable);
+    Page<Job> filter(String query, Long employerId, Pageable pageable);
 }
