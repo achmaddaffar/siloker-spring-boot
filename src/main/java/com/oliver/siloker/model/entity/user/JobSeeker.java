@@ -7,6 +7,7 @@ import com.oliver.siloker.model.response.JobSeekerResponse;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "job_seekers")
@@ -32,14 +33,14 @@ public class JobSeeker {
             name = "user_id",
             referencedColumnName = "id"
     )
-    private List<Skill> skills;
+    private List<Skill> skills = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "id"
     )
-    private List<Experience> experiences;
+    private List<Experience> experiences = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false)
     private String createdAt;

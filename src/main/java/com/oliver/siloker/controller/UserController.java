@@ -82,7 +82,7 @@ public class UserController {
     @PostMapping("/register-job-seeker")
     public ResponseEntity<BaseResponse<Boolean>> registerJobSeeker(
             @RequestBody RegisterJobSeekerRequest request
-    ) throws ResourceNotFoundException {
+    ) throws Exception {
         JobSeeker jobSeeker = userService.registerJobSeeker(request);
         return ResponseEntity.ok(
                 new BaseResponse<>(

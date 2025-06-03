@@ -18,8 +18,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,36 +90,97 @@ public class UserService {
         return true;
     }
 
-    public JobSeeker registerJobSeeker(
-            RegisterJobSeekerRequest request
-    ) throws ResourceNotFoundException {
+//    public JobSeeker registerJobSeeker(
+//            RegisterJobSeekerRequest request
+//    ) throws Exception {
+//        try {
+//            User user = userRepository.findByPhoneNumber(jwtUtils.getUserDetails().getUsername())
+//                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+//
+//            JobSeeker jobSeeker = user.getJobSeeker() == null ? new JobSeeker() : jobSeekerRepository.findByUserId(user.getId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Job Seeker not found"));
+//
+//            jobSeeker.setUser(user);
+//            jobSeeker.setResumeUrl(request.getResumeUrl());
+//            jobSeeker.setCreatedAt(LocalDateTime.now().toString());
+//
+//            skillRepository.deleteAll(Optional.ofNullable(jobSeeker.getSkills()).orElse(new ArrayList<>()));
+//            experienceRepository.deleteAll(Optional.ofNullable(jobSeeker.getExperiences()).orElse(new ArrayList<>()));
+//
+//            List<Skill> skills = request.getSkills().stream().map((skillName) -> {
+//                Skill skill = new Skill();
+//                skill.setName(skillName);
+//                skill.setCreatedAt(LocalDateTime.now().toString());
+//                return skill;
+//            }).toList();
+//
+//            List<Experience> experiences = request.getExperiences().stream().map((experienceName) -> {
+//                Experience experience = new Experience();
+//                experience.setName(experienceName);
+//                experience.setCreatedAt(LocalDateTime.now().toString());
+//                return experience;
+//            }).toList();
+//
+//            jobSeeker.getSkills().clear();
+//            jobSeeker.getSkills().addAll(skills);
+//            jobSeeker.getExperiences().clear();
+//            jobSeeker.getExperiences().addAll(experiences);
+//            user.setJobSeeker(jobSeeker);
+//
+//            return jobSeekerRepository.save(jobSeeker);
+//        } catch (Exception e) {
+//            throw new Exception(e);
+//        }
+//    }
+
+    public JobSeeker registerJobSeeker(RegisterJobSeekerRequest request) throws ResourceNotFoundException {
         User user = userRepository.findByPhoneNumber(jwtUtils.getUserDetails().getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        JobSeeker jobSeeker = jobSeekerRepository.findByUserId(user.getId())
-                .orElse(new JobSeeker());
+        JobSeeker jobSeeker = user.getJobSeeker() == null ? new JobSeeker() :
+                jobSeekerRepository.findByUserId(user.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Job Seeker not found"));
+
         jobSeeker.setUser(user);
         jobSeeker.setResumeUrl(request.getResumeUrl());
         jobSeeker.setCreatedAt(LocalDateTime.now().toString());
 
-        if (jobSeeker.getSkills() != null) skillRepository.deleteAll(jobSeeker.getSkills());
-        List<Skill> skills = request.getSkills().stream().map((skillName) -> {
-            Skill skill = new Skill();
-            skill.setName(skillName);
-            skill.setCreatedAt(LocalDateTime.now().toString());
-            return skill;
-        }).toList();
+        // --- Skills merge logic ---
+        List<Skill> currentSkills = Optional.ofNullable(jobSeeker.getSkills()).orElse(new ArrayList<>());
+        List<String> newSkillNames = request.getSkills();
 
-        if (jobSeeker.getExperiences() != null) experienceRepository.deleteAll(jobSeeker.getExperiences());
-        List<Experience> experiences = request.getExperiences().stream().map((experienceName) -> {
-            Experience experience = new Experience();
-            experience.setName(experienceName);
-            experience.setCreatedAt(LocalDateTime.now().toString());
-            return experience;
-        }).toList();
+        // Remove skills no longer in request
+        currentSkills.removeIf(skill -> !newSkillNames.contains(skill.getName()));
 
-        jobSeeker.setSkills(skills);
-        jobSeeker.setExperiences(experiences);
+        // Add or update skills from request
+        for (String skillName : newSkillNames) {
+            boolean exists = currentSkills.stream().anyMatch(skill -> skill.getName().equals(skillName));
+            if (!exists) {
+                Skill skill = new Skill();
+                skill.setName(skillName);
+                skill.setCreatedAt(LocalDateTime.now().toString());
+                currentSkills.add(skill);
+            }
+        }
+        jobSeeker.setSkills(currentSkills);
+
+        // --- Experiences merge logic ---
+        List<Experience> currentExperiences = Optional.ofNullable(jobSeeker.getExperiences()).orElse(new ArrayList<>());
+        List<String> newExperienceNames = request.getExperiences();
+
+        currentExperiences.removeIf(exp -> !newExperienceNames.contains(exp.getName()));
+
+        for (String expName : newExperienceNames) {
+            boolean exists = currentExperiences.stream().anyMatch(exp -> exp.getName().equals(expName));
+            if (!exists) {
+                Experience experience = new Experience();
+                experience.setName(expName);
+                experience.setCreatedAt(LocalDateTime.now().toString());
+                currentExperiences.add(experience);
+            }
+        }
+        jobSeeker.setExperiences(currentExperiences);
+
         user.setJobSeeker(jobSeeker);
 
         return jobSeekerRepository.save(jobSeeker);
@@ -128,13 +192,16 @@ public class UserService {
         User user = userRepository.findByPhoneNumber(jwtUtils.getUserDetails().getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Employer employer = employerRepository.findByUserId(user.getId())
-                .orElse(new Employer());
+        Employer employer = user.getEmployer() == null ? new Employer() : employerRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Employer not found"));
+
         employer.setUser(user);
         employer.setCompanyName(request.getCompanyName());
         employer.setPosition(request.getPosition());
         employer.setCompanyWebsite(request.getCompanyWebsite());
         employer.setCreatedAt(LocalDateTime.now().toString());
+
+        user.setEmployer(employer);
 
         return employerRepository.save(employer);
     }
