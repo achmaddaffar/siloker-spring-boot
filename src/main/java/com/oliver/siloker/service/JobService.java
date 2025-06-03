@@ -11,6 +11,7 @@ import com.oliver.siloker.model.repository.EmployerRepository;
 import com.oliver.siloker.model.repository.JobRepository;
 import com.oliver.siloker.model.repository.UserRepository;
 import com.oliver.siloker.model.request.CreateJobRequest;
+import com.oliver.siloker.model.response.JobDetailResponse;
 import com.oliver.siloker.model.response.JobResponse;
 import com.oliver.siloker.model.response.PagingInfo;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -90,5 +92,28 @@ public class JobService {
                 item.getCreatedAt(),
                 item.getUpdatedAt()
         )));
+    }
+
+    public JobDetailResponse getJob(
+            Long jobId
+    ) throws ResourceNotFoundException {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("Job is not found"));
+
+        User user = userRepository.findByEmployerId(job.getEmployer().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Employer is not found"));
+
+        return new JobDetailResponse(
+                job.getId(),
+                job.getTitle(),
+                job.getDescription(),
+                job.getImageUrl(),
+                user.getFullName(),
+                user.getPhoneNumber(),
+                user.getBio(),
+                user.getEmployer().toResponse(),
+                job.getCreatedAt(),
+                job.getUpdatedAt()
+        );
     }
 }

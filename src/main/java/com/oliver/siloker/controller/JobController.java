@@ -7,10 +7,7 @@ import com.oliver.siloker.model.entity.job.JobApplication;
 import com.oliver.siloker.model.exception.ResourceNotFoundException;
 import com.oliver.siloker.model.request.ApplyJobRequest;
 import com.oliver.siloker.model.request.CreateJobRequest;
-import com.oliver.siloker.model.response.BaseResponse;
-import com.oliver.siloker.model.response.JobApplicationResponse;
-import com.oliver.siloker.model.response.JobResponse;
-import com.oliver.siloker.model.response.PagingInfo;
+import com.oliver.siloker.model.response.*;
 import com.oliver.siloker.service.JobApplicationService;
 import com.oliver.siloker.service.JobService;
 import jakarta.validation.constraints.Min;
@@ -59,6 +56,20 @@ public class JobController {
                         HttpStatus.OK.value(),
                         "Success",
                         jobPagingInfo
+                )
+        );
+    }
+
+    @GetMapping("/{job_id}")
+    public ResponseEntity<BaseResponse<JobDetailResponse>> getJob(
+            @PathVariable("job_id") Long jobId
+    ) throws ResourceNotFoundException {
+        JobDetailResponse jobDetailResponse = jobService.getJob(jobId);
+        return ResponseEntity.ok(
+                new BaseResponse<>(
+                        HttpStatus.OK.value(),
+                        "Success",
+                        jobDetailResponse
                 )
         );
     }
