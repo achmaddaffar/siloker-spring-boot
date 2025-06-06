@@ -17,6 +17,7 @@ public class JobDetailResponse {
     private String fullName;
     private String phoneNumber;
     private String bio;
+    private String profilePictureUrl;
     private EmployerResponse employer;
 
     private String createdAt;

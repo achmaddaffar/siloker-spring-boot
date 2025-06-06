@@ -112,6 +112,7 @@ public class JobService {
                 user.getFullName(),
                 user.getPhoneNumber(),
                 user.getBio(),
+                user.getProfilePictureUrl(),
                 user.getEmployer().toResponse(),
                 job.getCreatedAt(),
                 job.getUpdatedAt()
