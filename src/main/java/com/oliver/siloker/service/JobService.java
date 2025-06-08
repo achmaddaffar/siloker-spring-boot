@@ -8,6 +8,7 @@ import com.oliver.siloker.model.entity.user.Employer;
 import com.oliver.siloker.model.entity.user.User;
 import com.oliver.siloker.model.exception.ResourceNotFoundException;
 import com.oliver.siloker.model.repository.EmployerRepository;
+import com.oliver.siloker.model.repository.JobApplicationRepository;
 import com.oliver.siloker.model.repository.JobRepository;
 import com.oliver.siloker.model.repository.UserRepository;
 import com.oliver.siloker.model.request.CreateJobRequest;
@@ -38,6 +39,7 @@ public class JobService {
     private final EmployerRepository employerRepository;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
+    private final JobApplicationRepository jobApplicationRepository;
     private final JwtUtils jwtUtils;
     private final FileUtils fileUtils;
 
@@ -103,6 +105,8 @@ public class JobService {
 
         User user = userRepository.findByEmployerId(job.getEmployer().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employer is not found"));
+        Boolean isApplicable = !user.getEmployer().getId().equals(job.getEmployer().getId()) ||
+                jobApplicationRepository.existsByJobSeekerAndJob(user.getJobSeeker(), job);
 
         return new JobDetailResponse(
                 job.getId(),
@@ -114,6 +118,7 @@ public class JobService {
                 user.getBio(),
                 user.getProfilePictureUrl(),
                 user.getEmployer().toResponse(),
+                isApplicable,
                 job.getCreatedAt(),
                 job.getUpdatedAt()
         );

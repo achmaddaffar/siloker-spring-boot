@@ -19,6 +19,7 @@ public class JobDetailResponse {
     private String bio;
     private String profilePictureUrl;
     private EmployerResponse employer;
+    private Boolean isApplicable;
 
     private String createdAt;
     private String updatedAt;
