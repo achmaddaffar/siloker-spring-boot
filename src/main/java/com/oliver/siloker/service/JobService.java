@@ -103,10 +103,11 @@ public class JobService {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResourceNotFoundException("Job is not found"));
 
-        User user = userRepository.findByEmployerId(job.getEmployer().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Employer is not found"));
-        Boolean isApplicable = !user.getEmployer().getId().equals(job.getEmployer().getId()) ||
-                jobApplicationRepository.existsByJobSeekerAndJob(user.getJobSeeker(), job);
+        User user = userRepository.findById(jwtUtils.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User is not found"));
+        Boolean isApplicable = Objects.nonNull(user.getEmployer()) &&
+                !Objects.equals(user.getEmployer().getId(), job.getEmployer().getId()) &&
+                !jobApplicationRepository.existsByJobSeekerAndJob(user.getJobSeeker(), job);
 
         return new JobDetailResponse(
                 job.getId(),
