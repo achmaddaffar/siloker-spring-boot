@@ -7,6 +7,7 @@ import com.oliver.siloker.model.exception.ResourceNotFoundException;
 import com.oliver.siloker.model.repository.UserRepository;
 import com.oliver.siloker.model.request.LoginRequest;
 import com.oliver.siloker.model.request.RegisterRequest;
+import com.oliver.siloker.model.response.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,7 +56,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public String loginUser(
+    public LoginResponse loginUser(
             LoginRequest request
     ) throws ResourceNotFoundException {
         User user = userRepository.findByPhoneNumber(request.getPhoneNumber())
@@ -67,6 +68,11 @@ public class AuthService {
         );
         authenticationManager.authenticate(authenticationToken);
 
-        return jwtUtils.generateToken(user);
+        String token = jwtUtils.generateToken(user);
+        return new LoginResponse(
+                token,
+                user.getEmployer() == null ? null : user.getEmployer().getId(),
+                user.getJobSeeker() == null ? null : user.getJobSeeker().getId()
+        );
     }
 }

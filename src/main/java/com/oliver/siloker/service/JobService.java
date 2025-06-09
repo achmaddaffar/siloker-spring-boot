@@ -20,16 +20,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -103,22 +99,24 @@ public class JobService {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ResourceNotFoundException("Job is not found"));
 
-        User user = userRepository.findById(jwtUtils.getUserId())
+        User userJobSeeker = userRepository.findById(jwtUtils.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User is not found"));
-        Boolean isApplicable = Objects.nonNull(user.getEmployer()) &&
-                !Objects.equals(user.getEmployer().getId(), job.getEmployer().getId()) &&
-                !jobApplicationRepository.existsByJobSeekerAndJob(user.getJobSeeker(), job);
+        User userEmployer = userRepository.findByEmployerId(job.getEmployer().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Employer is not found"));
+
+        Boolean isApplicable = !Objects.equals(userJobSeeker.getId(), userEmployer.getId()) &&
+                !jobApplicationRepository.existsByJobSeekerAndJob(userEmployer.getJobSeeker(), job);
 
         return new JobDetailResponse(
                 job.getId(),
                 job.getTitle(),
                 job.getDescription(),
                 job.getImageUrl(),
-                user.getFullName(),
-                user.getPhoneNumber(),
-                user.getBio(),
-                user.getProfilePictureUrl(),
-                user.getEmployer().toResponse(),
+                userEmployer.getFullName(),
+                userEmployer.getPhoneNumber(),
+                userEmployer.getBio(),
+                userEmployer.getProfilePictureUrl(),
+                userEmployer.getEmployer().toResponse(),
                 isApplicable,
                 job.getCreatedAt(),
                 job.getUpdatedAt()

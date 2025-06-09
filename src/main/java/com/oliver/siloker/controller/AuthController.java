@@ -6,6 +6,7 @@ import com.oliver.siloker.model.exception.ResourceNotFoundException;
 import com.oliver.siloker.model.request.LoginRequest;
 import com.oliver.siloker.model.request.RegisterRequest;
 import com.oliver.siloker.model.response.BaseResponse;
+import com.oliver.siloker.model.response.LoginResponse;
 import com.oliver.siloker.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,15 +50,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<String>> login(
+    public ResponseEntity<BaseResponse<LoginResponse>> login(
             @RequestBody LoginRequest request
     ) throws ResourceNotFoundException {
-        String token = authService.loginUser(request);
+        LoginResponse response = authService.loginUser(request);
         return ResponseEntity.ok(
                 new BaseResponse<>(
                         HttpStatus.OK.value(),
                         "Success",
-                        token
+                        response
                 )
         );
     }
