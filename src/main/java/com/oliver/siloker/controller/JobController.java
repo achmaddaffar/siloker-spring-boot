@@ -115,6 +115,21 @@ public class JobController {
         );
     }
 
+    @GetMapping("/applicants/{applicantId}")
+    public ResponseEntity<BaseResponse<JobApplicationResponse>> getJobApplicantById(
+            @PathVariable Long applicantId
+    ) throws ResourceNotFoundException {
+        JobApplicationResponse jobApplicationResponse = jobApplicationService.getJobApplicantById(applicantId);
+
+        return ResponseEntity.ok(
+                new BaseResponse<>(
+                        HttpStatus.OK.value(),
+                        "Success",
+                        jobApplicationResponse
+                )
+        );
+    }
+
     @PostMapping("/applicants/{applicationId}/accept")
     public ResponseEntity<BaseResponse<JobApplicationResponse>> acceptApplication(
             @PathVariable Long applicationId

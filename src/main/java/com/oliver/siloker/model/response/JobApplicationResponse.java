@@ -20,11 +20,16 @@ public class JobApplicationResponse {
     private String fullName;
     private String phoneNumber;
     private String bio;
+    private String profilePictureUrl;
     private String resumeUrl;
     private String cvUrl;
     private List<Skill> skills;
     private List<Experience> experiences;
     private ApplicationStatus status;
+    private Long jobId;
+    private String title;
+    private String description;
+    private String imageUrl;
     private String createdAt;
     private String updatedAt;
 }

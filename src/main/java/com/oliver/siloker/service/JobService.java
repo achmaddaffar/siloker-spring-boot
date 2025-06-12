@@ -104,7 +104,8 @@ public class JobService {
         User userEmployer = userRepository.findByEmployerId(job.getEmployer().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employer is not found"));
 
-        Boolean isApplicable = !Objects.equals(userJobSeeker.getId(), userEmployer.getId()) &&
+        Boolean isApplicable = Objects.nonNull(userJobSeeker.getJobSeeker()) &&
+                !Objects.equals(userJobSeeker.getId(), userEmployer.getId()) &&
                 !jobApplicationRepository.existsByJobSeekerAndJob(userEmployer.getJobSeeker(), job);
 
         return new JobDetailResponse(

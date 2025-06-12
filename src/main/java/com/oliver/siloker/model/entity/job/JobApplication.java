@@ -42,11 +42,16 @@ public class JobApplication {
                 getJobSeeker().getUser().getFullName(),
                 getJobSeeker().getUser().getPhoneNumber(),
                 getJobSeeker().getUser().getBio(),
+                getJobSeeker().getUser().getProfilePictureUrl(),
                 getJobSeeker().getResumeUrl(),
                 getCvUrl(),
                 getJobSeeker().getSkills(),
                 getJobSeeker().getExperiences(),
                 getStatus(),
+                getJob().getId(),
+                getJob().getTitle(),
+                getJob().getDescription(),
+                getJob().getImageUrl(),
                 getCreatedAt(),
                 getUpdatedAt()
         );

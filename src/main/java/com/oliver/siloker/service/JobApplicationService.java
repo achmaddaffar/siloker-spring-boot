@@ -77,6 +77,21 @@ public class JobApplicationService {
         return jobApplicationRepository.save(jobApplication);
     }
 
+    public JobApplicationResponse getJobApplicantById(
+            Long applicantId
+    ) throws ResourceNotFoundException {
+        User user = userRepository.findById(jwtUtils.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.getJobSeeker() == null)
+            throw new IllegalStateException("User is not registered as Job Seeker");
+
+        JobApplication jobApplication = jobApplicationRepository.findById(applicantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Applicant not found"));
+
+        return jobApplication.toResponse();
+    }
+
     public PagingInfo<JobApplicationResponse> getJobApplicantsByJobSeekerId(
             Integer page,
             Integer size
