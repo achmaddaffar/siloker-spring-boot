@@ -18,6 +18,7 @@ import com.oliver.siloker.model.response.PagingInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -102,7 +103,7 @@ public class JobApplicationService {
         if (user.getJobSeeker() == null)
             throw new IllegalStateException("User is not registered as Job Seeker");
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<JobApplication> jobApplicationPage = jobApplicationRepository.filterByJobSeekerId(user.getJobSeeker().getId(), pageRequest);
         return PagingInfo.convertFromPage(jobApplicationPage.map(JobApplication::toResponse));
     }

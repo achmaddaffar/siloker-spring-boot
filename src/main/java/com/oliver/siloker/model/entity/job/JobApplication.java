@@ -48,6 +48,7 @@ public class JobApplication {
                 getJobSeeker().getSkills(),
                 getJobSeeker().getExperiences(),
                 getStatus(),
+                getJob().getEmployer().getUser().getPhoneNumber(),
                 getJob().getId(),
                 getJob().getTitle(),
                 getJob().getDescription(),

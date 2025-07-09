@@ -26,6 +26,7 @@ public class JobApplicationResponse {
     private List<Skill> skills;
     private List<Experience> experiences;
     private ApplicationStatus status;
+    private String employerPhoneNumber;
     private Long jobId;
     private String title;
     private String description;
