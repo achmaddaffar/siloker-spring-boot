@@ -12,10 +12,6 @@
 
 "SiLoker" is a comprehensive Job Vacancy Information System designed to streamline the process of hiring and job searching. This application serves three main user roles: Administrators, Job Seekers, and Companies, each with a dedicated dashboard and functionalities.
 
-\<\!-- Add a screenshot of your application here\! --\>
-
-\<\!--  --\>
-
 ## ✨ Key Features
 
   - **👤 Multi-Role Access:**
