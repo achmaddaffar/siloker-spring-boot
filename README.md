@@ -1,13 +1,7 @@
 -----
-
-\<div align="center"\>
-
 # SiLoker - Job Vacancy Information System
 
 **A robust web application built with Spring Boot to connect job seekers with companies.**
-
-\</div\>
-
 -----
 
 "SiLoker" is a comprehensive Job Vacancy Information System designed to streamline the process of hiring and job searching. This application serves three main user roles: Administrators, Job Seekers, and Companies, each with a dedicated dashboard and functionalities.
